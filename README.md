@@ -1,49 +1,50 @@
 # DashBot – Geometry Dash Discord Bot
 
-Discord-Bot rund um Geometry Dash: Level-Vorschläge, ein Hardest-Board mit
-Auto-Rollen, selbstgebaute Challenges und eine Dojo-Liste. Alle
-Level-Daten kommen live über die GDBrowser- und AREDL-APIs — es gibt keine
-lokale Leveldatenbank (siehe [gd_api.py](gd_api.py)).
+A Discord bot for Geometry Dash: level suggestions, a hardest-level board
+with auto-roles, self-made challenges, and a dojo list. All level data
+comes live from the GDBrowser and AREDL APIs — there's no local level
+database (see [gd_api.py](gd_api.py)).
 
 ## Features
 
-- **`/panel`** — Panel mit „Suggest Level"-Button. Modal fragt Hardest
-  Level, New Hardest (Ja/Nein), Game Modes und optional Big Skill Jump ab
-  und schlägt passende Level vor.
-- **`/route`** — Panel mit „Route erstellen"-Button. Baut aus aktuellem
-  Hardest und Dream Hardest eine Level-Treppe dazwischen, gewichtet nach
-  dem Skill-Set (AREDL-Tags) des Dream-Levels.
-- **`/hardest`** — Board aller Member mit ihrem Hardest Level, automatisch
-  nach Schwierigkeit sortiert. „Update Hardest"-Button zum Eintragen neuer
-  Level; vergibt automatisch Rollen (siehe unten).
-- **`/challenge`** — postet eine selbstgebaute Challenge mit Screenshot,
-  Level-ID und Skill-Tags. „Gebeated"-Button mit Zähler und Namensliste.
-- **`/dojolist`** — manuell geordnete Challenge-Liste (schwerste zuerst).
-  „Add Challenge"-Button zum Einfügen/Verschieben per Spot-Nummer.
+- **`/panel`** — panel with a "Suggest Level" button. The modal asks for
+  hardest level, new hardest (Yes/No), game modes, and an optional big
+  skill jump, then suggests a matching level.
+- **`/route`** — panel with a "Route erstellen" button. Builds a level
+  staircase between your current hardest and dream hardest, weighted by
+  the skill set (AREDL tags) of the dream level.
+- **`/hardest`** — board of every member's hardest level, automatically
+  sorted by difficulty. "Update Hardest" button to log a new level;
+  automatically assigns roles (see below).
+- **`/challenge`** — post a self-made challenge with screenshot, level ID,
+  and skill tags. "Gebeated" button with a beat counter and name list.
+- **`/dojolist`** — manually ordered challenge list (hardest first). "Add
+  Challenge" button to insert/move entries by spot number.
 
 ## Setup
 
-### 1. Bot im Discord Developer Portal anlegen
+### 1. Create the bot in the Discord Developer Portal
 
 1. https://discord.com/developers/applications → **New Application**
-2. Links auf **Bot** → **Reset Token** → Token kopieren
-3. Unter **Bot** die privilegierten Intents aktivieren: **Server Members
-   Intent** (für Auto-Rollen und Member-Suche bei `/hardest`)
-4. Links auf **OAuth2** → URL Generator: Scopes `bot` + `applications.commands`,
-   Berechtigungen **Send Messages**, **Manage Roles** → mit der generierten
-   URL den Bot einladen
+2. Go to **Bot** → **Reset Token** → copy the token
+3. Under **Bot**, enable the **Server Members Intent** privileged intent
+   (needed for auto-roles and member lookup in `/hardest`)
+4. Go to **OAuth2** → URL Generator: scopes `bot` + `applications.commands`,
+   permissions **Send Messages**, **Manage Roles** → invite the bot with
+   the generated URL
 
-### 2. Token eintragen
+### 2. Set the token
+
+Create a `.env` file in the project root:
 
 ```
-cp .env.example .env
+DISCORD_TOKEN=your-bot-token
+
+# optional, comma-separated, for instant slash-command sync while testing
+TEST_GUILD_ID=123456789012345678,987654321098765432
 ```
 
-Dann in `.env` den Token einsetzen. Für sofortigen Slash-Command-Sync
-beim Testen zusätzlich `TEST_GUILD_ID` setzen (kommagetrennt bei mehreren
-Servern).
-
-### 3. Abhängigkeiten installieren & starten
+### 3. Install dependencies & run
 
 ```
 python -m venv .venv
@@ -51,17 +52,17 @@ python -m venv .venv
 .venv/bin/python bot.py                     # Windows: .venv\Scripts\python
 ```
 
-### 4. Rollen für `/hardest` einrichten
+### 4. Set up roles for `/hardest`
 
-In [bot.py](bot.py) stehen die Rollen-IDs als Konstanten
-(`ROLE_HARD_DEMON`, `ROLE_EXTREME_DEMON`, `ROLE_BLOODBATH`,
-`ROLE_SONIC_WAVE`, `ROLE_TOP_150`, `ROLE_TOP_75`, `JOIN_ROLE_ID`) — an die
-eigenen Server-Rollen anpassen. Die Bot-Rolle braucht **Rollen verwalten**
-und muss in der Rollenliste über diesen Rollen stehen.
+[bot.py](bot.py) defines the role IDs as constants (`ROLE_HARD_DEMON`,
+`ROLE_EXTREME_DEMON`, `ROLE_BLOODBATH`, `ROLE_SONIC_WAVE`, `ROLE_TOP_150`,
+`ROLE_TOP_75`, `JOIN_ROLE_ID`) — adjust them to your server's roles. The
+bot's role needs **Manage Roles** and must sit above these roles in the
+role list.
 
-## Persistente Daten
+## Persistent data
 
-`hardest.json`, `dojolist.json`, `challenges.json` und `challenge_images/`
-werden zur Laufzeit automatisch angelegt und sind in `.gitignore`
-ausgeschlossen — bei einem frischen Checkout starten die Boards mit den
-Seed-Daten aus [hardest.py](hardest.py) bzw. [dojolist.py](dojolist.py).
+`hardest.json`, `dojolist.json`, `challenges.json`, and
+`challenge_images/` are created automatically at runtime and excluded via
+`.gitignore` — on a fresh checkout, boards start from the seed data in
+[hardest.py](hardest.py) and [dojolist.py](dojolist.py).
